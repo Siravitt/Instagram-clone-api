@@ -28,7 +28,7 @@ module.exports = async (req, res, next) => {
     // });
 
     req.user = user;
-    // req.follow = follow;s
+    // req.follow = follows
     next();
   } catch (err) {
     next(err);

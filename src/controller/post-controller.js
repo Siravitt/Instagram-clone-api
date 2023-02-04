@@ -11,7 +11,10 @@ exports.editProfile = async (req, res, next) => {
     });
 
     if (req.file?.path) {
-      value.image = await cloudinary.upload(value.image);
+      value.image = await cloudinary.upload(value.image, {
+        width: 500,
+        height: 500,
+      });
     }
     value.userId = req.user.id;
 

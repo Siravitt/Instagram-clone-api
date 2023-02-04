@@ -4,7 +4,7 @@ exports.upload = async (filePath, publicId) => {
   const option = {
     unique_filename: false,
     use_filename: true,
-    overwrite: true
+    overwrite: true,
   };
 
   if (publicId) {

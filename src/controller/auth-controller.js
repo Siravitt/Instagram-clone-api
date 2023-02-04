@@ -45,11 +45,11 @@ exports.login = async (req, res, next) => {
     const value = validateLogin(req.body);
 
     const user = await User.findOne({
-      where: { userName: value.userName },
+      where: { email: value.email },
     });
 
     if (!user) {
-      createError("Invalid username or password", 400);
+      createError("Invalid email or password", 400);
     }
 
     const accessToken = jwt.sign(
