@@ -1,12 +1,12 @@
 const express = require("express");
 const router = express.Router();
 const upload = require("../middlewares/upload");
-const postController = require("../controller/post-controller");
+const profileController = require("../controller/profile-controller");
 
 router.patch(
   "/edit-profile",
   upload.single("profileImage"),
-  postController.editProfile
+  profileController.editProfile
 );
 
 module.exports = router;

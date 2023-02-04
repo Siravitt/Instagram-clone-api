@@ -1,7 +1,7 @@
 const { Op } = require("sequelize");
 const { User } = require("../models");
 
-exports.searchFriend = async (req, res, next) => {
+exports.searchUser = async (req, res, next) => {
   const { search } = req.body;
   console.log(search);
   const user = req.user;

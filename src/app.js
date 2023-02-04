@@ -9,7 +9,7 @@ const app = express();
 
 const searchRoute = require("./routes/searchRoute");
 const authRoute = require("./routes/authRoute");
-const postRoute = require("./routes/postRoute");
+const profileRoute = require("./routes/profileRoute");
 const notFound = require("./middlewares/notFound");
 const authenticate = require("./middlewares/authenticate");
 
@@ -19,8 +19,8 @@ app.use(express.json());
 
 app.use("/auth", authRoute);
 app.use("/user", authenticate);
-app.use("/profile", authenticate, postRoute);
-app.use("/search", authenticate, searchRoute)
+app.use("/profile", authenticate, profileRoute);
+app.use("/search", authenticate, searchRoute);
 
 app.use(error);
 

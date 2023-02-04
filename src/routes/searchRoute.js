@@ -1,8 +1,8 @@
 const express = require("express");
 const router = express.Router();
 
-const friendController = require("../controller/friend-controller")
+const searchController = require("../controller/search-controller")
 
-router.post("/search-users", friendController.searchFriend)
+router.post("/search-users", searchController.searchUser)
 
 module.exports = router;
