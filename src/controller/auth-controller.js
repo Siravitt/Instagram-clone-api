@@ -1,4 +1,4 @@
-const { User } = require("../models");
+const { User, Follow } = require("../models");
 const { Op } = require("sequelize");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
@@ -51,6 +51,30 @@ exports.login = async (req, res, next) => {
     if (!user) {
       createError("Invalid email or password", 400);
     }
+
+    const follow = await Follow.findAll({
+      where: {
+        [Op.or]: [
+          {
+            followingId: user.id,
+          },
+          {
+            followerId: user.id,
+          },
+        ],
+      },
+      include: [
+        {
+          model: User,
+          as: "following",
+        },
+        {
+          model: User,
+          as: "follower",
+        },
+      ],
+    });
+
 
     const accessToken = jwt.sign(
       {
