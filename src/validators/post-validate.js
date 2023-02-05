@@ -2,9 +2,9 @@ const Joi = require("joi");
 
 const validate = require("./validate");
 
-const editProfileSchema = Joi.object({
-  userName: Joi.string().trim(),
+const postImageSchema = Joi.object({
+  title: Joi.string().trim(),
   image: Joi.string().trim(),
-}).or("userName", "image");
+}).or("title", "image");
 
-exports.validateEditProfile = validate(editProfileSchema);
+exports.validatePostImageSchema = validate(postImageSchema);

@@ -1,5 +1,5 @@
 const fs = require("fs");
-const { validateEditProfile } = require("../validators/post-validate");
+const { validateEditProfile } = require("../validators/edit-validate");
 const cloudinary = require("../utils/cloudinary");
 const { User } = require("../models");
 

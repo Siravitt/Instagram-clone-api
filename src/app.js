@@ -7,6 +7,7 @@ const express = require("express");
 const error = require("./middlewares/error");
 const app = express();
 
+const postRoute = require("./routes/postRoute");
 const searchRoute = require("./routes/searchRoute");
 const authRoute = require("./routes/authRoute");
 const profileRoute = require("./routes/profileRoute");
@@ -21,6 +22,7 @@ app.use("/auth", authRoute);
 app.use("/user", authenticate);
 app.use("/profile", authenticate, profileRoute);
 app.use("/search", authenticate, searchRoute);
+app.use("/post", authenticate, postRoute);
 
 app.use(error);
 

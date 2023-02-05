@@ -52,28 +52,28 @@ exports.login = async (req, res, next) => {
       createError("Invalid email or password", 400);
     }
 
-    const follow = await Follow.findAll({
-      where: {
-        [Op.or]: [
-          {
-            followingId: user.id,
-          },
-          {
-            followerId: user.id,
-          },
-        ],
-      },
-      include: [
-        {
-          model: User,
-          as: "following",
-        },
-        {
-          model: User,
-          as: "follower",
-        },
-      ],
-    });
+    // const follow = await Follow.findAll({
+    //   where: {
+    //     [Op.or]: [
+    //       {
+    //         followingId: user.id,
+    //       },
+    //       {
+    //         followerId: user.id,
+    //       },
+    //     ],
+    //   },
+    //   include: [
+    //     {
+    //       model: User,
+    //       as: "following",
+    //     },
+    //     {
+    //       model: User,
+    //       as: "follower",
+    //     },
+    //   ],
+    // });
 
 
     const accessToken = jwt.sign(
