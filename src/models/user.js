@@ -35,6 +35,7 @@ module.exports = (sequelize, DataTypes) => {
         allowNull: false,
       },
       profileImage: DataTypes.STRING,
+      bio: DataTypes.STRING,
     },
     {
       underscored: true,
@@ -83,18 +84,18 @@ module.exports = (sequelize, DataTypes) => {
       as: "following",
       foreignKey: {
         name: "followingId",
-        allowNull: false
+        allowNull: false,
       },
-      onDelete: "RESTRICT"
-    })
+      onDelete: "RESTRICT",
+    });
     User.hasMany(db.Follow, {
       as: "follower",
       foreignKey: {
         name: "followerId",
-        allowNull: false
+        allowNull: false,
       },
-      onDelete: "RESTRICT"
-    })
+      onDelete: "RESTRICT",
+    });
   };
 
   return User;

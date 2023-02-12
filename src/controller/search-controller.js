@@ -1,6 +1,6 @@
 const { Op } = require("sequelize");
-const { User } = require("../models");
 const createError = require("../utils/create-error");
+const { User, Post, Follow } = require("../models");
 
 exports.searchUser = async (req, res, next) => {
   try {
@@ -28,26 +28,52 @@ exports.searchUser = async (req, res, next) => {
   }
 };
 
-exports.searchIdUser = async (req, res, next) => {
+exports.searchById = async (req, res, next) => {
   try {
-    const { id } = req.body;
-    const user = req.user;
-
-    if (id === user.id) {
-      createError("Cannot search this id");
-    }
+    const { id } = req.params;
     const newUser = await User.findOne({
       where: { id: id },
-      attributes: {
-        exclude: ["password"],
-      },
     });
 
     if (!newUser) {
-      res.status(200).json("User not found");
+      createError("Not found user", 400);
     }
 
     res.status(200).json({ newUser });
+  } catch (err) {
+    next(err);
+  }
+};
+
+exports.searchUserData = async (req, res, next) => {
+  try {
+    const posts = await Post.findAll({
+      where: { userId: req.body.id },
+      order: [["createdAt", "DESC"]],
+    });
+    const follow = await Follow.findAll({
+      where: {
+        [Op.or]: [
+          {
+            followingId: req.body.id,
+          },
+          {
+            followerId: req.body.id,
+          },
+        ],
+      },
+      include: [
+        {
+          model: User,
+          as: "following",
+        },
+        {
+          model: User,
+          as: "follower",
+        },
+      ],
+    });
+    res.status(200).json({ posts, follow });
   } catch (err) {
     next(err);
   }

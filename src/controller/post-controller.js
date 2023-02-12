@@ -1,22 +1,18 @@
 const fs = require("fs");
+const { Op } = require("sequelize");
 const cloudinary = require("../utils/cloudinary");
 const { validatePostImageSchema } = require("../validators/post-validate");
-const { Post } = require("../models");
+const { Post, Follow, User, Like } = require("../models");
 
-exports.postImage = async (req, res, next) => {
+exports.createPost = async (req, res, next) => {
   try {
-    console.log(req.body);
-    console.log(req.file?.path);
     const value = validatePostImageSchema({
       title: req.body.title,
       image: req.file?.path,
     });
 
     if (req.file?.path) {
-      value.image = await cloudinary.upload(value.image, {
-        width: 500,
-        height: 500,
-      });
+      value.image = await cloudinary.upload(value.image);
     }
     value.userId = req.user.id;
 
@@ -36,13 +32,88 @@ exports.postImage = async (req, res, next) => {
   }
 };
 
-exports.getHolderPost = async (req, res, next) => {
+exports.getAllPostByFollowing = async (req, res, next) => {
   try {
     const user = req.user;
-    const posts = await Post.findAll({
-      where: { userId: user.id },
+    const following = await Follow.findAll({
+      where: { followerId: user.id },
     });
+    const friendId = following.map((el) => el.followingId);
+
+    const allPosts = await Post.findAll({
+      where: {
+        userId: {
+          [Op.or]: [user.id, ...friendId],
+        },
+      },
+      order: [["createdAt", "DESC"]],
+      include: [
+        {
+          model: User,
+          attributes: {
+            exclude: ["password"],
+          },
+        },
+        {
+          model: Like,
+        },
+      ],
+    });
+    res.status(200).json({ allPosts });
+  } catch (err) {
+    next(err);
+  }
+};
+
+exports.getPostById = async (req, res, next) => {
+  try {
+    const { postId } = req.params;
+    const post = await Post.findOne({
+      where: {
+        id: postId,
+      },
+      include: [
+        {
+          model: Like,
+        },
+        {
+          model: User,
+        },
+      ],
+    });
+    res.status(200).json({ post });
+  } catch (err) {
+    next(err);
+  }
+};
+
+exports.getProfilePost = async (req, res, next) => {
+  try {
+    const user = req.user;
+
+    const posts = await Post.findAll({
+      where: {
+        userId: user.id,
+      },
+    });
+
     res.status(200).json({ posts });
+  } catch (err) {
+    next(err);
+  }
+};
+
+exports.deletePost = async (req, res, next) => {
+  try {
+    const { postId } = req.params;
+
+    await Post.destroy({
+      where: {
+        id: postId,
+      },
+    });
+    
+    res.status(200).json({ message: "Delete complete" });
   } catch (err) {
     next(err);
   }
