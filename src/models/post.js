@@ -34,14 +34,14 @@ module.exports = (sequelize, DataTypes) => {
         name: "postId",
         allowNull: false,
       },
-      onDelete: "RESTRICT",
+      onDelete: "CASCADE",
     });
     Post.hasMany(db.Like, {
       foreignKey: {
         name: "postId",
         allowNull: false,
       },
-      onDelete: "RESTRICT",
+      onDelete: "CASCADE",
     });
   };
 

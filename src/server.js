@@ -1,6 +1,6 @@
 const server = require("./app");
 const { Server } = require("socket.io");
-const chalk = require("chalk");
+const chalk = require("chalk")
 
 const io = new Server(server, {
   cors: {
@@ -32,6 +32,9 @@ io.on("connection", (socket) => {
       text: `${from} starting follow you`,
     });
   });
+  socket.on("send_chat", ({to,from}) => {
+    socket.to(onlineUser[to]).emit("receive_chat", {})
+  })
 });
 
 server.listen(process.env.PORT, () =>

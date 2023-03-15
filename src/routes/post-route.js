@@ -8,6 +8,6 @@ router.post("/post-image", upload.single("image"), postController.createPost);
 router.get("/get-all-post", postController.getAllPostByFollowing);
 router.get("/get-profile-post", postController.getProfilePost);
 router.get("/get-post-id/:postId", postController.getPostById);
-router.delete("/delete-post/:postId")
+router.delete("/delete-post/:userId/:postId", postController.deletePost);
 
 module.exports = router;

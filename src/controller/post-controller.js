@@ -2,7 +2,8 @@ const fs = require("fs");
 const { Op } = require("sequelize");
 const cloudinary = require("../utils/cloudinary");
 const { validatePostImageSchema } = require("../validators/post-validate");
-const { Post, Follow, User, Like } = require("../models");
+const { Post, Follow, User, Like, Comment } = require("../models");
+const createError = require("../utils/create-error");
 
 exports.createPost = async (req, res, next) => {
   try {
@@ -81,6 +82,11 @@ exports.getPostById = async (req, res, next) => {
         },
       ],
     });
+
+    if (!post) {
+      createError("Not found", 400);
+    }
+
     res.status(200).json({ post });
   } catch (err) {
     next(err);
@@ -105,14 +111,22 @@ exports.getProfilePost = async (req, res, next) => {
 
 exports.deletePost = async (req, res, next) => {
   try {
+    const user = req.user;
     const { postId } = req.params;
+    const { userId } = req.params;
+
+    console.log(userId, user.id);
+
+    if (+userId !== +user.id) {
+      createError("Cannot delete this post", 400);
+    }
 
     await Post.destroy({
       where: {
         id: postId,
       },
     });
-    
+
     res.status(200).json({ message: "Delete complete" });
   } catch (err) {
     next(err);

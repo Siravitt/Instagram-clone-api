@@ -6,9 +6,10 @@ const authenticate = require("../middlewares/authenticate");
 
 router.post("/register", authController.register);
 router.post("/login", authController.login);
-router.get("/me", authController.getMe);
+router.get("/me", authenticate, authController.getMe);
 router.patch(
   "/edit-profile",
+  authenticate,
   upload.single("profileImage"),
   authController.editProfile
 );

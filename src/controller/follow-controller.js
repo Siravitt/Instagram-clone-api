@@ -1,4 +1,5 @@
-const { Follow } = require("../models");
+const { Op } = require("sequelize");
+const { Follow, User } = require("../models");
 const createError = require("../utils/create-error");
 
 exports.createFollow = async (req, res, next) => {
@@ -49,6 +50,48 @@ exports.deleteFollow = async (req, res, next) => {
     });
 
     res.status(200).json({ message: "Unfollow complete" });
+  } catch (err) {
+    next(err);
+  }
+};
+
+exports.getAllFollow = async (req, res, next) => {
+  try {
+    const { userId } = req.params;
+    const user = await User.findOne({
+      where: { id: userId },
+    });
+
+    if (!user) {
+      createError("Not found", 400);
+    }
+
+    const follow = await Follow.findAll({
+      where: {
+        [Op.or]: [
+          {
+            followingId: user.id,
+          },
+          {
+            followerId: user.id,
+          },
+        ],
+      },
+      include: [
+        {
+          model: User,
+          as: "following",
+          attributes: { exclude: ["password"] },
+        },
+        {
+          model: User,
+          as: "follower",
+          attributes: { exclude: ["password"] },
+        },
+      ],
+    });
+
+    res.status(200).json({ follow });
   } catch (err) {
     next(err);
   }

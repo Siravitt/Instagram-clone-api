@@ -20,7 +20,7 @@ module.exports = (sequelize, DataTypes) => {
         name: "postId",
         allowNull: false,
       },
-      onDelete: "RESTRICT",
+      onDelete: "CASCADE",
     });
   };
 
